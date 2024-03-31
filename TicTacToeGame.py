@@ -105,8 +105,28 @@ def DisplayGameBoard(board):
 
 import random        
 import time
-import random
-import time
+
+
+def CheckWinConditions(gb):
+    if not EvaluationFunction(gb):
+            # Game = False
+            print("Game draw")
+            DisplayGameBoard(gb)
+            return False            # break
+    if EvaluationFunction(gb) == 'X':
+            print('X wins') 
+            DisplayGameBoard(gb)
+            # Game = False 
+            return False
+            # break# Game ends
+    if EvaluationFunction(gb) == 'O':
+            print('O wins')
+            DisplayGameBoard(gb)
+            # Game = False  # Game ends
+            # break
+            return False
+    return True
+    
 
 def StartGame(gb, firstturn,opt):
     Game = True
@@ -126,12 +146,22 @@ def StartGame(gb, firstturn,opt):
             time.sleep(2)
             firstturn = False
             if opt==1:
-                x=int(input("enter row 0-2"))
-                y=int(input('enter column 0-2'))
-                gb[x][y]=player[1]
-                DisplayGameBoard(gb)
-                turn=1
-                # break
+
+                invalid_move=True
+                while invalid_move:
+                    x=int(input("enter row 0-2 : "))
+                    y=int(input('enter column 0-2 : '))
+                    if gb[x][y]=='':
+                        
+                        gb[x][y]=player[1]
+                        DisplayGameBoard(gb)
+                        turn=1
+                        invalid_move=False
+                        break
+                    # break
+                    else:
+                        print("invalid move")
+                        continue                        
             else:
                 while True:
                     x2 = random.randint(0, 2)
@@ -146,39 +176,64 @@ def StartGame(gb, firstturn,opt):
             
         if turn == 1:                    
             MakeMove(gb, player[0])
+            Game=CheckWinConditions(gb)
+            if Game==False:
+                break
             turn = 2
+            print('\n\n---\n\n')
             DisplayGameBoard(gb)
             print("Opponent Thinking ....")
             time.sleep(2)
         
+        print('\n<--------->\n')
+        
         if turn == 2:
             if opt==1:
-                x=int(input("enter row 0-2"))
-                y=int(input('enter column 0-2'))
-                gb[x][y]=player[1]
-                turn=1
-                DisplayGameBoard(gb)
- 
+
+                invalid_move=True
+                while invalid_move:
+                        x=int(input("enter row 0-2 : "))
+                        y=int(input('enter column 0-2 : '))
+                        if gb[x][y]=='':
+                        
+                            gb[x][y]=player[1]
+                            Game=CheckWinConditions(gb)
+                            if Game==False:
+                                break
+                            turn=1
+                            DisplayGameBoard(gb)
+                            invalid_move=False
+                            print('\n\n---\n\n')
+                            break
+                        else:
+                            print('invalid move')
+                            continue            
             else:    
                 MakeMove(gb, player[1])
+                Game=CheckWinConditions(gb)
+                if Game==False:
+                    break
                 turn = 1
+
                 DisplayGameBoard(gb)
                 print("Opponent Thinking ....")
                 time.sleep(2)
 
-        if not EvaluationFunction(gb):
-            Game = False
-            print("Game draw")
-            DisplayGameBoard(gb)
-        if EvaluationFunction(gb) == 'X':
-            print('X wins') 
-            DisplayGameBoard(gb)
-            Game = False  # Game ends
-        if EvaluationFunction(gb) == 'O':
-            print('O wins')
-            DisplayGameBoard(gb)
-            Game = False  # Game ends
-
+        # if not EvaluationFunction(gb):
+        #     Game = False
+        #     print("Game draw")
+        #     DisplayGameBoard(gb)
+        #     break
+        # if EvaluationFunction(gb) == 'X':
+        #     print('X wins') 
+        #     DisplayGameBoard(gb)
+        #     Game = False 
+        #     break# Game ends
+        # if EvaluationFunction(gb) == 'O':
+        #     print('O wins')
+        #     DisplayGameBoard(gb)
+        #     Game = False  # Game ends
+        #     break
 
 
 opt=int(input("Human Vs Ai (1) or Ai Vs Ai (2)"))
